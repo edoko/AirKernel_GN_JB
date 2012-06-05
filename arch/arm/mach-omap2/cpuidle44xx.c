@@ -112,6 +112,7 @@ static struct clockdomain *cpu1_cd;
 
 static struct cpuidle_params cpuidle_params_table[] = {
 	/* C1 - CPUx WFI + MPU ON  + CORE ON */
+<<<<<<< HEAD
 	{.exit_latency = 2 + 2,	.target_residency = 5, .valid = 1},
 	/* C2 - CPU0 INA + CPU1 INA + MPU INA  + CORE INA */
 	{.exit_latency = 1100, .target_residency = 1100, .valid = 1},
@@ -123,6 +124,85 @@ static struct cpuidle_params cpuidle_params_table[] = {
 #else
 	{.exit_latency = 1500, .target_residency = 1500, .valid = 0},
 #endif
+=======
+	{
+		.exit_latency = 4,
+		.target_residency = 4,
+		.valid = 1,
+	},
+	/* C2 - CPUx OFF + MPU INA  + CORE INA */
+	{
+		.exit_latency = 300,
+		.target_residency = 300,
+		.valid = 1,
+	},
+	/* C3 - CPUx OFF + MPU CSWR + CORE OSWR */
+	{
+		.exit_latency = 5000,
+		.target_residency = 10000,
+		.valid = 1,
+	},
+	/* C4 - CPUx OFF + MPU CSWR + CORE OSWR */
+	{
+		.exit_latency = 5200,
+		.target_residency = 35000,
+		.valid = CPU_IDLE_ALLOW_OSWR,
+	},
+};
+
+static __initdata struct cpuidle_params omap446x_cpuidle_params_table[] = {
+	/* C1 - CPUx WFI + MPU ON  + CORE ON */
+	{
+		.exit_latency = 4,
+		.target_residency = 4,
+		.valid = 1,
+	},
+	/* C2 - CPUx OFF + MPU INA  + CORE INA */
+	{
+		.exit_latency = 300,
+		.target_residency = 1800,
+		.valid = 1,
+	},
+	/* C3 - CPUx OFF + MPU CSWR + CORE OSWR */
+	{
+		.exit_latency = 1300,
+		.target_residency = 4000,
+		.valid = 1,
+	},
+	/* C4 - CPUx OFF + MPU CSWR + CORE OSWR */
+	{
+		.exit_latency = 1500,
+		.target_residency = 4200,
+		.valid = CPU_IDLE_ALLOW_OSWR,
+	},
+};
+
+static __initdata struct cpuidle_params omap447x_cpuidle_params_table[] = {
+	/* C1 - CPUx WFI + MPU ON  + CORE ON */
+	{
+		.exit_latency = 4,
+		.target_residency = 4,
+		.valid = 1,
+	},
+	/* C2 - CPUx OFF + MPU INA  + CORE INA */
+	{
+		.exit_latency = 500,
+		.target_residency = 1200,
+		.valid = 1,
+	},
+	/* C3 - CPUx OFF + MPU CSWR + CORE OSWR */
+	{
+		.exit_latency = 5300,
+		.target_residency = 5300,
+		.valid = 1,
+	},
+	/* C4 - CPUx OFF + MPU CSWR + CORE OSWR */
+	{
+		.exit_latency = 5500,
+		.target_residency = 15000,
+		.valid = CPU_IDLE_ALLOW_OSWR,
+	},
+>>>>>>> 2a138c6... cpuidle44xx.c: now that we're using Ezekeel's Weathley governor we wan't to pay close attention to C4 state, so let's tweak the exit_latency
 };
 
 static void omap4_update_actual_state(struct cpuidle_device *dev,

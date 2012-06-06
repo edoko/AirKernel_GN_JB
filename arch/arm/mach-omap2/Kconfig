@@ -390,6 +390,12 @@ config OMAP4_PPA_CPU1_ONLINE_BUG
 	  If, on the other hand, you do not understand the change, leave the
 	  default as enabled.
 
+config OMAP_GPU_OVERCLOCK
+	bool "Enable GPU OverClock 512Mhz"
+	default n
+	help
+	  Enable GPU OverClock 512Mhz / Disable GPU OverClock 384Mhz
+
 endmenu
 
 endif

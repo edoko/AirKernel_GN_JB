@@ -7210,7 +7210,11 @@ s32 wl_update_wiphybands(struct wl_priv *wl)
 	if (err) {
 		WL_ERR(("wl_construct_reginfo() fails err=%d\n", err));
 		if (err != BCME_UNSUPPORTED)
+<<<<<<< HEAD
 			goto end_bands;
+=======
+			return err;
+>>>>>>> 0476d43... net: wireless: bcmdhd: Ignore error if "chanspecs" command is not supported
 		/* Ignore error if "chanspecs" command is not supported */
 		err = 0;
 	}

@@ -32,6 +32,9 @@ modules.builtin
 *.lzo
 *.patch
 *.gcno
+ashldi3.S
+piggy.xzkern
+piggy.xzkern.S
 
 #
 # Top-level generic files

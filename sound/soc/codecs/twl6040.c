@@ -971,7 +971,7 @@ void soundcontrol_reportjack(int jack_type)
 EXPORT_SYMBOL(soundcontrol_reportjack);
 #endif
 
-static int twl6040_hs_dac_event(struct snd_soc_dapm_widget *w,
+static int twl6040_dac_event(struct snd_soc_dapm_widget *w,
 			struct snd_kcontrol *kcontrol, int event)
 {
 	msleep(1);
@@ -986,11 +986,12 @@ static int twl6040_ep_event(struct snd_soc_dapm_widget *w,
 	int ret = 0;
 
 	if (SND_SOC_DAPM_EVENT_ON(event)) {
-		/* Earphone doesn't support low power mode */
-		priv->power_mode_forced = 1;
-		ret = headset_power_mode(codec, 1);
+		if (!strcmp(w->name, "Earphone Enable")) {
+		 /* Earphone doesn't support low power mode */
+		 	priv->power_mode_forced = 1;
+			ret = headset_power_mode(codec, 1);
+		 }
 	} else {
-		priv->non_lp--;
 		if (!strcmp(w->name, "Earphone Enable")) {
 			priv->power_mode_forced = 0;
 #ifdef CONFIG_SOUND_CONTROL

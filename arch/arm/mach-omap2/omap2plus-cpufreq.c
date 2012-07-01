@@ -340,7 +340,7 @@ static int __cpuinit omap_cpu_init(struct cpufreq_policy *policy)
 	cpufreq_frequency_table_get_attr(freq_table, policy->cpu);
 
 	policy->min = 350000;
-	policy->max = 1220000;
+	policy->max = 1200000;
 	policy->cur = omap_getspeed(policy->cpu);
 
 	for (i = 0; freq_table[i].frequency != CPUFREQ_TABLE_END; i++)
@@ -520,7 +520,7 @@ static ssize_t store_uv_mv_table(struct cpufreq_policy *policy,
 }
 
 static struct freq_attr omap_uv_mv_table = {
-	.attr = {.name = "UV_mV_table", .mode=0644,},
+	.attr = {.name = "UV_mV_table", .mode=0666,},
 	.show = show_uv_mv_table,
 	.store = store_uv_mv_table,
 };

@@ -35,6 +35,7 @@ modules.builtin
 ashldi3.S
 piggy.xzkern
 piggy.xzkern.S
+system.dts
 
 #
 # Top-level generic files

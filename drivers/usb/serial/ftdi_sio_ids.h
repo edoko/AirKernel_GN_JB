@@ -794,7 +794,6 @@
 #define PI_VID              0x1a72  /* Vendor ID */
 #define PI_E861_PID         0x1008  /* E-861 piezo controller USB connection */
 
-
 /*
  * Bayer Ascensia Contour blood glucose meter USB-converter cable.
  * http://winglucofacts.com/cables/

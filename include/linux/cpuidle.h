@@ -22,7 +22,7 @@
 #define CPUIDLE_DESC_LEN	32
 
 struct cpuidle_device;
-struct cpuidle_driver;
+
 
 /****************************
  * CPUIDLE DEVICE INTERFACE *
@@ -45,8 +45,7 @@ struct cpuidle_state {
 	unsigned int	target_residency; /* in US */
 
 	int (*enter)	(struct cpuidle_device *dev,
-			struct cpuidle_driver *drv,
-			int index);
+			 int index);
 };
 
 /* Idle State Flags */
@@ -84,10 +83,12 @@ struct cpuidle_state_kobj {
 struct cpuidle_device {
 	unsigned int		registered:1;
 	unsigned int		enabled:1;
+	unsigned int		power_specified:1;
 	unsigned int		cpu;
 
 	int			last_residency;
 	int			state_count;
+	struct cpuidle_state	states[CPUIDLE_STATE_MAX];
 	struct cpuidle_state_usage  states_usage[CPUIDLE_STATE_MAX];
 	struct cpuidle_state_kobj *kobjs[CPUIDLE_STATE_MAX];
 
@@ -95,6 +96,7 @@ struct cpuidle_device {
 	struct kobject		kobj;
 	struct completion	kobj_unregister;
 	void			*governor_data;
+	int			safe_state_index;
 };
 
 DECLARE_PER_CPU(struct cpuidle_device *, cpuidle_devices);
@@ -118,11 +120,6 @@ static inline int cpuidle_get_last_residency(struct cpuidle_device *dev)
 struct cpuidle_driver {
 	char			name[CPUIDLE_NAME_LEN];
 	struct module 		*owner;
-
-	unsigned int		power_specified:1;
-	struct cpuidle_state	states[CPUIDLE_STATE_MAX];
-	int			state_count;
-	int			safe_state_index;
 };
 
 #ifdef CONFIG_CPU_IDLE
@@ -169,13 +166,10 @@ struct cpuidle_governor {
 	struct list_head 	governor_list;
 	unsigned int		rating;
 
-	int  (*enable)		(struct cpuidle_driver *drv,
-					struct cpuidle_device *dev);
-	void (*disable)		(struct cpuidle_driver *drv,
-					struct cpuidle_device *dev);
+	int  (*enable)		(struct cpuidle_device *dev);
+	void (*disable)		(struct cpuidle_device *dev);
 
-	int  (*select)		(struct cpuidle_driver *drv,
-					struct cpuidle_device *dev);
+	int  (*select)		(struct cpuidle_device *dev);
 	void (*reflect)		(struct cpuidle_device *dev, int index);
 
 	struct module 		*owner;

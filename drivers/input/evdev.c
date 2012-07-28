@@ -79,22 +79,14 @@ static void evdev_pass_event(struct evdev_client *client,
 		client->buffer[client->tail].value = 0;
 
 		client->packet_head = client->tail;
-<<<<<<< HEAD
 		if (client->use_wake_lock)
 			wake_unlock(&client->wake_lock);
-=======
-		wake_unlock(&client->wake_lock);
->>>>>>> 34796f0... Input: evdev - Don't hold wakelock when no data is available to user-space
 	}
 
 	if (event->type == EV_SYN && event->code == SYN_REPORT) {
 		client->packet_head = client->head;
-<<<<<<< HEAD
 		if (client->use_wake_lock)
 			wake_lock(&client->wake_lock);
-=======
-		wake_lock_timeout(&client->wake_lock, 5 * HZ);
->>>>>>> 34796f0... Input: evdev - Don't hold wakelock when no data is available to user-space
 		kill_fasync(&client->fasync, SIGIO, POLL_IN);
 	}
 
@@ -396,12 +388,8 @@ static int evdev_fetch_next_event(struct evdev_client *client,
 	if (have_event) {
 		*event = client->buffer[client->tail++];
 		client->tail &= client->bufsize - 1;
-<<<<<<< HEAD
 		if (client->use_wake_lock &&
 		    client->packet_head == client->tail)
-=======
-		if (client->packet_head == client->tail)
->>>>>>> 34796f0... Input: evdev - Don't hold wakelock when no data is available to user-space
 			wake_unlock(&client->wake_lock);
 	}
 

@@ -1207,10 +1207,10 @@ static int __init setup_vmstat(void)
 		start_cpu_timer(cpu);
 #endif
 #ifdef CONFIG_PROC_FS
-	proc_create("buddyinfo", S_IRUGO, NULL, &fragmentation_file_operations);
-	proc_create("pagetypeinfo", S_IRUGO, NULL, &pagetypeinfo_file_ops);
-	proc_create("vmstat", S_IRUGO, NULL, &proc_vmstat_file_operations);
-	proc_create("zoneinfo", S_IRUGO, NULL, &proc_zoneinfo_file_operations);
+	proc_create("buddyinfo", S_IRUSR, NULL, &fragmentation_file_operations);
+	proc_create("pagetypeinfo", S_IRUSR, NULL, &pagetypeinfo_file_ops);
+	proc_create("vmstat", S_IRUSR, NULL, &proc_vmstat_file_operations);
+	proc_create("zoneinfo", S_IRUSR, NULL, &proc_zoneinfo_file_operations);
 #endif
 	return 0;
 }

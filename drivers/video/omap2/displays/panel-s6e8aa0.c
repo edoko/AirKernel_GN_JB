@@ -70,7 +70,7 @@ enum {
 #define DRIVER_NAME "s6e8aa0_i2c"
 #define DEVICE_NAME "s6e8aa0_i2c"
 
-static int contrast = -9;
+static int contrast = -5;
 module_param(contrast, int, 0755);
 EXPORT_SYMBOL(contrast);
 
@@ -201,7 +201,7 @@ struct omap_dss_device * lcd_dev;
 
 struct s6e8aa0_data * s6_data;
 
-int v1_offset[3] = {-10, 0, -10};
+int v1_offset[3] = {-5, 0, 5};
 #endif
 
 static int s6e8aa0_write_reg(struct omap_dss_device *dssdev, u8 reg, u8 val)

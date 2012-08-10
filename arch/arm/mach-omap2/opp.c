@@ -112,11 +112,8 @@ int __init omap_init_opp_table(struct omap_opp_def *opp_def,
 				dev_err(dev, "%s:%s:err dvfs register %d %d\n",
 					__func__, opp_def->hwmod_name, r, i);
 		}
-<<<<<<< HEAD
 next:
 		opp_def++;
-=======
->>>>>>> ARM: OMAP2+: OPP: Fix to ensure check of right oppdef after bad one
 	}
 
 	return 0;

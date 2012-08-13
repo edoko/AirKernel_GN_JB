@@ -153,7 +153,7 @@ static struct omap_opp_def __initdata omap443x_opp_def_list[] = {
 	OPP_INITIALIZER("aess", "abe_clk", "iva", true, 196608000, OMAP4430_VDD_IVA_OPP100_UV),
 };
 
-#define OMAP4460_VDD_MPU_OPP25_UV		1000000
+#define OMAP4460_VDD_MPU_OPP25_UV		 975000
 #define OMAP4460_VDD_MPU_OPP50_UV		1025000
 #define OMAP4460_VDD_MPU_OPP100_UV		1200000
 #define OMAP4460_VDD_MPU_OPPTURBO_UV		1225000

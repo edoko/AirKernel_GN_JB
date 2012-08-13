@@ -376,6 +376,9 @@ extern struct cpufreq_governor cpufreq_gov_wheatley;
 #elif defined(CONFIG_CPU_FREQ_DEFAULT_GOV_SAKURACTIVE)
 extern struct cpufreq_governor cpufreq_gov_sakuractive;
 #define CPUFREQ_DEFAULT_GOVERNOR	(&cpufreq_gov_sakuractive)
+#elif defined(CONFIG_CPU_FREQ_DEFAULT_GOV_ONDEMANDX)
+extern struct cpufreq_governor cpufreq_gov_ondemandx;
+#define CPUFREQ_DEFAULT_GOVERNOR  (&cpufreq_gov_ondemandx)
 #endif
 
 

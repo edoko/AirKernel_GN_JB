@@ -423,7 +423,7 @@ static void bfq_add_rq_rb(struct request *rq)
 	struct bfq_queue *bfqq = RQ_BFQQ(rq);
 	struct bfq_entity *entity = &bfqq->entity;
 	struct bfq_data *bfqd = bfqq->bfqd;
-	struct request *__alias, *next_rq, *prev;
+	struct request *next_rq, *prev;
 	unsigned long old_raising_coeff = bfqq->raising_coeff;
 	int idle_for_long_time = bfqq->budget_timeout +
 		bfqd->bfq_raising_min_idle_time < jiffies;

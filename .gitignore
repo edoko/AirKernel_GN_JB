@@ -34,7 +34,7 @@ modules.builtin
 *.gcno
 ashldi3.S
 piggy.xzkern
-piggy.xzkern.S
+#piggy.xzkern.S
 system.dts
 
 #

@@ -1,6 +1,6 @@
 #
 # Automatically generated make config: don't edit
-# Linux/arm 3.0.40 Kernel Configuration
+# Linux/arm 3.0.41 Kernel Configuration
 #
 CONFIG_ARM=y
 CONFIG_HAVE_PWM=y
@@ -2378,7 +2378,6 @@ CONFIG_JBD2=y
 # CONFIG_NILFS2_FS is not set
 CONFIG_FS_POSIX_ACL=y
 CONFIG_FILE_LOCKING=y
-# CONFIG_FSYNC is not set
 CONFIG_FSNOTIFY=y
 # CONFIG_DNOTIFY is not set
 CONFIG_INOTIFY_USER=y

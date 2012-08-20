@@ -936,6 +936,10 @@ static int cpufreq_governor_interactive(struct cpufreq_policy *policy,
 			}
 			pcpu->governor_enabled = 1;
 			up_write(&pcpu->enable_sem);
+			pcpu->idle_exit_time = pcpu->target_set_time;
+			mod_timer(&pcpu->cpu_timer,
+				jiffies + usecs_to_jiffies(timer_rate));
+			smp_wmb();
 		}
 
 		/*

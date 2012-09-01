@@ -229,10 +229,10 @@ int omap4_prcm_freq_update(void)
 #define MAX_DPLL_WAIT_TRIES	1000000
 
 #define OMAP_1_5GHz	1800000000 // high clock
-#define OMAP_1_2GHz	1200000000
+#define OMAP_1_2GHz	1228000000
 //#define OMAP_1GHz	1000000000
-#define OMAP_920MHz	1050000000
-#define OMAP_748MHz	720000000
+#define OMAP_920MHz	1026000000
+#define OMAP_748MHz	702000000
 
 /* Supported only on OMAP4 */
 int omap4_dpllmx_gatectrl_read(struct clk *clk)

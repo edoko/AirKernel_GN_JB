@@ -1,6 +1,6 @@
 #
 # Automatically generated make config: don't edit
-# Linux/arm 3.0.41 Kernel Configuration
+# Linux/arm 3.0.42 Kernel Configuration
 #
 CONFIG_ARM=y
 CONFIG_HAVE_PWM=y
@@ -1896,6 +1896,7 @@ CONFIG_SND_SOC_OMAP_HDMI_CODEC=y
 CONFIG_HID_SUPPORT=y
 CONFIG_HID=y
 # CONFIG_HIDRAW is not set
+# CONFIG_UHID is not set
 
 #
 # USB Input Devices
@@ -2663,6 +2664,7 @@ CONFIG_CRYPTO_MD5=y
 # CONFIG_CRYPTO_RMD256 is not set
 # CONFIG_CRYPTO_RMD320 is not set
 CONFIG_CRYPTO_SHA1=y
+CONFIG_CRYPTO_SHA1_ARM=y
 CONFIG_CRYPTO_SHA256=y
 # CONFIG_CRYPTO_SHA512 is not set
 # CONFIG_CRYPTO_TGR192 is not set
@@ -2672,6 +2674,7 @@ CONFIG_CRYPTO_SHA256=y
 # Ciphers
 #
 CONFIG_CRYPTO_AES=y
+CONFIG_CRYPTO_AES_ARM=y
 # CONFIG_CRYPTO_ANUBIS is not set
 CONFIG_CRYPTO_ARC4=y
 # CONFIG_CRYPTO_BLOWFISH is not set

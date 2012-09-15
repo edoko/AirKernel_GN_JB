@@ -397,7 +397,6 @@ static void cpufreq_interactive_tune(struct work_struct *work)
 		if (!pcpu->governor_enabled)
 			continue;
 
-		mutex_lock(&set_speed_lock);
 
 		for_each_cpu(j, pcpu->policy->cpus) {
 			struct cpufreq_interactive_cpuinfo *pjcpu =
@@ -425,7 +424,6 @@ static void cpufreq_interactive_tune(struct work_struct *work)
 					pcpu->freq_table[index+1].frequency;
 				cur_tune_value = LOW_POWER_TUNE;
 		}
-		mutex_unlock(&set_speed_lock);
 	}
 
 }
@@ -793,7 +791,6 @@ static ssize_t store_sampling_periods(struct kobject *kobj,
 	if (val == sampling_periods)
 		return count;
 
-	mutex_lock(&set_speed_lock);
 
 	for_each_present_cpu(j) {
 		pcpu = &per_cpu(cpuinfo, j);
@@ -830,7 +827,6 @@ out:
 				jiffies + usecs_to_jiffies(timer_rate));
 	}
 
-	mutex_unlock(&set_speed_lock);
 
 	return count;
 }

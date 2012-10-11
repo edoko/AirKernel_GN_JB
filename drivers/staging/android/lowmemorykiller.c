@@ -43,17 +43,21 @@ static uint32_t lowmem_debug_level = 1;
 static int lowmem_adj[6] = {
 	0,
 	1,
+	2,
+	4,
 	6,
-	12,
+	15,
 };
-static int lowmem_adj_size = 4;
+static int lowmem_adj_size = 6;
 static int lowmem_minfree[6] = {
-	3 * 512,	/* 6MB */
-	2 * 1024,	/* 8MB */
-	4 * 1024,	/* 16MB */
-	16 * 1024,	/* 64MB */
+	1536,
+	3072,
+	4096,
+	51200,
+	57600,
+	64000,	
 };
-static int lowmem_minfree_size = 4;
+static int lowmem_minfree_size = 6;
 
 static unsigned long lowmem_deathpending_timeout;
 
@@ -83,6 +87,7 @@ static int lowmem_shrink(struct shrinker *s, struct shrink_control *sc)
 		array_size = lowmem_adj_size;
 	if (lowmem_minfree_size < array_size)
 		array_size = lowmem_minfree_size;
+
 	for (i = 0; i < array_size; i++) {
 		if (other_free < lowmem_minfree[i] &&
 		    other_file < lowmem_minfree[i]) {
@@ -198,6 +203,7 @@ static void lowmem_autodetect_oom_adj_values(void)
 	if (array_size <= 0)
 		return;
 
+
 	oom_adj = lowmem_adj[array_size - 1];
 	if (oom_adj > OOM_ADJUST_MAX)
 		return;
@@ -258,15 +264,15 @@ module_param_named(cost, lowmem_shrinker.seeks, int, S_IRUGO | S_IWUSR);
 __module_param_call(MODULE_PARAM_PREFIX, adj,
 		    &lowmem_adj_array_ops,
 		    .arr = &__param_arr_adj,
-		    S_IRUGO | S_IWUSR, -1);
+		    0600, 1);
 __MODULE_PARM_TYPE(adj, "array of int");
 #else
 module_param_array_named(adj, lowmem_adj, int, &lowmem_adj_size,
 			 S_IRUGO | S_IWUSR);
 #endif
 module_param_array_named(minfree, lowmem_minfree, uint, &lowmem_minfree_size,
-			 S_IRUGO | S_IWUSR);
-module_param_named(debug_level, lowmem_debug_level, uint, S_IRUGO | S_IWUSR);
+			 0600);
+module_param_named(debug_level, lowmem_debug_level, uint, 0600);
 
 module_init(lowmem_init);
 module_exit(lowmem_exit);

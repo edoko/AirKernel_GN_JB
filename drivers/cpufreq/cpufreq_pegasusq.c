@@ -144,10 +144,10 @@ static unsigned int get_nr_run_avg(void)
 
 #define DEF_SAMPLING_DOWN_FACTOR		(2)
 #define MAX_SAMPLING_DOWN_FACTOR		(100000)
-#define DEF_FREQUENCY_DOWN_DIFFERENTIAL		(3)
+#define DEF_FREQUENCY_DOWN_DIFFERENTIAL		(5)
 #define DEF_FREQUENCY_UP_THRESHOLD		(70)
 #define DEF_FREQUENCY_MIN_SAMPLE_RATE		(10000)
-#define MIN_FREQUENCY_UP_THRESHOLD		(9)
+#define MIN_FREQUENCY_UP_THRESHOLD		(11)
 #define MAX_FREQUENCY_UP_THRESHOLD		(100)
 #define DEF_SAMPLING_RATE			(50000)
 #define MIN_SAMPLING_RATE			(10000)
@@ -160,7 +160,7 @@ static unsigned int get_nr_run_avg(void)
 #define DEF_FREQ_STEP				(40)
 #define DEF_START_DELAY				(0)
 
-#define UP_THRESHOLD_AT_MIN_FREQ		(80)
+#define UP_THRESHOLD_AT_MIN_FREQ		(90)
 #define FREQ_FOR_RESPONSIVENESS			(100000)
 
 #define HOTPLUG_DOWN_INDEX			(0)
@@ -183,10 +183,10 @@ static int hotplug_rq[4][2] = {
 };
 
 static int hotplug_freq[4][2] = {
-	{0, 720000},
-	{350000, 720000},
-	{350000, 720000},
-	{350000, 0}
+	{0, 702000},
+	{384000, 702000},
+	{384000, 702000},
+	{384000, 0}
 };
 #endif
 
@@ -901,7 +901,7 @@ static int check_up(void)
 	int up_freq, up_rq;
 	int min_freq = INT_MAX;
 	int min_rq_avg = INT_MAX;
-//	int avg_freq = 0, avg_rq = 0;
+	int avg_freq = 0, avg_rq = 0;
 	int online;
 	int hotplug_lock = atomic_read(&g_hotplug_lock);
 
@@ -918,9 +918,9 @@ static int check_up(void)
 		&& online >= dbs_tuners_ins.max_cpu_lock)
 		return 0;
 
-	if (num_hist == 0 || num_hist % up_rate)
+	if (num_hist % up_rate)
 		return 0;
- //   if(num_hist == 0) num_hist = MAX_HOTPLUG_RATE;
+    if(num_hist == 0) num_hist = MAX_HOTPLUG_RATE;
 
 	for (i = num_hist - 1; i >= num_hist - up_rate; --i) {
 		usage = &hotplug_history->usage[i];
@@ -930,20 +930,19 @@ static int check_up(void)
 
 		min_freq = min(min_freq, freq);
 		min_rq_avg = min(min_rq_avg, rq_avg);
-//		avg_rq += rq_avg;
-//		avg_freq += freq;
+		avg_rq += rq_avg;
+		avg_freq += freq;
 
 		if (dbs_tuners_ins.dvfs_debug)
 			debug_hotplug_check(1, rq_avg, freq, usage);
 	}
-//	avg_rq /= up_rate;
-//	avg_freq /= up_rate;
+	avg_rq /= up_rate;
+	avg_freq /= up_rate;
 
-	if (min_freq >= up_freq && min_rq_avg > up_rq) {
-//	if (avg_freq >= up_freq && avg_rq > up_rq) {
+	if (avg_freq >= up_freq && avg_rq > up_rq) {
 		printk(KERN_ERR "[HOTPLUG IN] %s %d>=%d && %d>%d\n",
 			__func__, min_freq, up_freq, min_rq_avg, up_rq);
-		hotplug_history->num_hist = 0;
+		//hotplug_history->num_hist = 0;
 		return 1;
 	}
 	return 0;
@@ -959,7 +958,7 @@ static int check_down(void)
 	int down_freq, down_rq;
 	int max_freq = 0;
 	int max_rq_avg = 0;
-//	int avg_freq = 0, avg_rq = 0;
+	int avg_freq = 0, avg_rq = 0;
 	int online;
 	int hotplug_lock = atomic_read(&g_hotplug_lock);
 
@@ -979,7 +978,7 @@ static int check_down(void)
 
 	if (num_hist == 0 || num_hist % down_rate)
 		return 0;
- //   if(num_hist == 0) num_hist = MAX_HOTPLUG_RATE; //make it circular -gm
+    if(num_hist == 0) num_hist = MAX_HOTPLUG_RATE; //make it circular -gm
 
 	for (i = num_hist - 1; i >= num_hist - down_rate; --i) {
 		usage = &hotplug_history->usage[i];
@@ -989,20 +988,19 @@ static int check_down(void)
 
 		max_freq = max(max_freq, freq);
 		max_rq_avg = max(max_rq_avg, rq_avg);
-//		avg_rq += rq_avg;
-//		avg_freq += freq;
+		avg_rq += rq_avg;
+		avg_freq += freq;
 
 		if (dbs_tuners_ins.dvfs_debug)
 			debug_hotplug_check(0, rq_avg, freq, usage);
 	}
-//	avg_rq /= down_rate;
-//	avg_freq /= down_rate;
+	avg_rq /= down_rate;
+	avg_freq /= down_rate;
 
-	if (max_freq <= down_freq && max_rq_avg <= down_rq) {
-//	if (avg_freq <= down_freq && avg_rq <= down_rq) {
+	if (avg_freq <= down_freq && avg_rq <= down_rq) {
 		printk(KERN_ERR "[HOTPLUG OUT] %s %d<=%d && %d<%d\n",
 			__func__, max_freq, down_freq, max_rq_avg, down_rq);
-		hotplug_history->num_hist = 0;
+		//hotplug_history->num_hist = 0;
 		return 1;
 	}
 
@@ -1016,8 +1014,7 @@ static void dbs_check_cpu(struct cpu_dbs_info_s *this_dbs_info)
 	struct cpufreq_policy *policy;
 	unsigned int j;
 	int num_hist = hotplug_history->num_hist;
-	int max_hotplug_rate = max(dbs_tuners_ins.cpu_up_rate,
-				dbs_tuners_ins.cpu_down_rate);
+	int max_hotplug_rate = MAX_HOTPLUG_RATE;
 	int up_threshold = dbs_tuners_ins.up_threshold;
 
 	policy = this_dbs_info->cur_policy;

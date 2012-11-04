@@ -279,11 +279,12 @@ asmlinkage void __cpuinit secondary_start_kernel(void)
 {
 	struct mm_struct *mm = &init_mm;
 	unsigned int cpu;
+	static bool booted;
 
 	/*
-	 * The identity mapping is uncached (strongly ordered), so
-	 * switch away from it before attempting any exclusive accesses.
-	 */
+	* The identity mapping is uncached (strongly ordered), so
+	* switch away from it before attempting any exclusive accesses.
+	*/
 	cpu_switch_mm(mm->pgd, mm);
 	enter_lazy_tlb(mm, current);
 	local_flush_tlb_all();
@@ -310,7 +311,9 @@ asmlinkage void __cpuinit secondary_start_kernel(void)
 
 	notify_cpu_starting(cpu);
 
-	calibrate_delay();
+	if (!booted)
+		calibrate_delay();
+	booted = true;
 
 	smp_store_cpu_info(cpu);
 

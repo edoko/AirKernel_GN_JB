@@ -84,4 +84,5 @@ arch/arm/boot/compressed/piggy.xzkern
 mkboot/
 boot.img
 zImage
+build.sh
 \#*#

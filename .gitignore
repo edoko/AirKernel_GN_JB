@@ -82,4 +82,8 @@ GTAGS
 
 *.orig
 *~
+build_4.1.sh
+/mkboot
+changelog_*
+build.sh
 \#*#

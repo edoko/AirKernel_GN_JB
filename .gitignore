@@ -85,4 +85,5 @@ mkboot/
 boot.img
 zImage
 build.sh
+changelog_*
 \#*#

@@ -1681,13 +1681,9 @@ long do_io_submit(aio_context_t ctx_id, long nr,
 {
 	struct kioctx *ctx;
 	long ret = 0;
-<<<<<<< HEAD
 	int i = 0;
 	struct blk_plug plug;
 	struct kiocb_batch batch;
-=======
-	int i;
->>>>>>> 384f747... Asynchronous I/O latency to a solid-state disk greatly increased
 
 	if (unlikely(nr < 0))
 		return -EINVAL;
@@ -1704,13 +1700,10 @@ long do_io_submit(aio_context_t ctx_id, long nr,
 		return -EINVAL;
 	}
 
-<<<<<<< HEAD
 	kiocb_batch_init(&batch, nr);
 
 	blk_start_plug(&plug);
 
-=======
->>>>>>> 384f747... Asynchronous I/O latency to a solid-state disk greatly increased
 	/*
 	 * AKPM: should this return a partial result if some of the IOs were
 	 * successfully submitted?
@@ -1733,6 +1726,7 @@ long do_io_submit(aio_context_t ctx_id, long nr,
 		if (ret)
 			break;
 	}
+	blk_finish_plug(&plug);
 
 	kiocb_batch_free(ctx, &batch);
 	put_ioctx(ctx);

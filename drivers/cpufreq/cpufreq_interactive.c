@@ -61,7 +61,11 @@ static cpumask_t speedchange_cpumask;
 static spinlock_t speedchange_cpumask_lock;
 
 /* Hi speed to bump to from lo speed when load burst (default max) */
+<<<<<<< HEAD
 static unsigned int hispeed_freq;
+=======
+static u64 hispeed_freq;
+>>>>>>> parent of 0f51dc1... cpufreq: interactive: add input_boost_freq entry. This entry is the frequency which the CPU will be boosted when the screen is touched. It's user configurable from userspace and it needs to match the entries in the frequency table.
 
 /* Go to hi speed when CPU load at or above this value. */
 #define DEFAULT_GO_HISPEED_LOAD 85
@@ -423,6 +427,7 @@ static void cpufreq_interactive_boost(void)
 		wake_up_process(speedchange_task);
 }
 
+<<<<<<< HEAD
 static ssize_t show_target_load(
 	struct kobject *kobj, struct attribute *attr, char *buf)
 {
@@ -447,6 +452,8 @@ static struct global_attr target_load_attr =
 	__ATTR(target_load, S_IRUGO | S_IWUSR,
 		show_target_load, store_target_load);
 
+=======
+>>>>>>> parent of 0f51dc1... cpufreq: interactive: add input_boost_freq entry. This entry is the frequency which the CPU will be boosted when the screen is touched. It's user configurable from userspace and it needs to match the entries in the frequency table.
 static ssize_t show_hispeed_freq(struct kobject *kobj,
 				 struct attribute *attr, char *buf)
 {
@@ -608,7 +615,10 @@ static struct global_attr boostpulse =
 	__ATTR(boostpulse, 0200, NULL, store_boostpulse);
 
 static struct attribute *interactive_attributes[] = {
+<<<<<<< HEAD
 	&target_load_attr.attr,
+=======
+>>>>>>> parent of 0f51dc1... cpufreq: interactive: add input_boost_freq entry. This entry is the frequency which the CPU will be boosted when the screen is touched. It's user configurable from userspace and it needs to match the entries in the frequency table.
 	&hispeed_freq_attr.attr,
 	&go_hispeed_load_attr.attr,
 	&above_hispeed_delay.attr,

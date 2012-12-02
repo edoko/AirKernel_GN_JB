@@ -287,17 +287,12 @@ static struct omap_opp_def __initdata omap446x_opp_def_list[] = {
 	/* SGX OPP1 - OPP50 */
 	OPP_INITIALIZER("gpu", "dpll_per_m7x2_ck", "core", true, 153600000, OMAP4460_VDD_CORE_OPP50_UV),
 	/* SGX OPP2 - OPP100 */
-#ifdef CONFIG_OMAP_GPU_STOCKCLOCK
 	OPP_INITIALIZER("gpu", "dpll_per_m7x2_ck", "core", true, 307200000, OMAP4460_VDD_CORE_OPP100_UV),
-#endif
-	/* SGX OPP3 - OPPOV */
 #ifdef CONFIG_OMAP_GPU_384_OVERCLOCK
-	OPP_INITIALIZER("gpu", "dpll_per_m7x2_ck", "core", true, 307200000, OMAP4460_VDD_CORE_OPP100_UV),
+	/* SGX OPP3 - OPPOV */
 	OPP_INITIALIZER("gpu", "dpll_per_m7x2_ck", "core", true, 384000000, OMAP4460_VDD_CORE_OPP100_OV_UV),
 #endif
 #ifdef CONFIG_OMAP_GPU_512_OVERCLOCK
-	OPP_INITIALIZER("gpu", "dpll_per_m7x2_ck", "core", true, 307200000, OMAP4460_VDD_CORE_OPP100_UV),
-	OPP_INITIALIZER("gpu", "dpll_per_m7x2_ck", "core", true, 384000000, OMAP4460_VDD_CORE_OPP100_OV_UV),
 	OPP_INITIALIZER("gpu", "dpll_per_m7x2_ck", "core", true, 512000000, OMAP4460_VDD_CORE_OPP100_OV_UV),
 #endif
 	/* FDIF OPP1 - OPP25 */

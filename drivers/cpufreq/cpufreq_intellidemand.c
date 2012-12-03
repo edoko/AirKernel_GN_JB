@@ -55,7 +55,7 @@
 #define DBS_INPUT_EVENT_MIN_FREQ		(1200000)
 
 #ifdef CONFIG_CPUFREQ_ID_PERFLOCK
-#define DBS_PERFLOCK_MIN_FREQ			(236000)
+#define DBS_PERFLOCK_MIN_FREQ			(364000)
 #endif
 
 u64 freq_boosted_time;

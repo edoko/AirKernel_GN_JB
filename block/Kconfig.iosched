@@ -75,12 +75,6 @@ config CGROUP_BFQIO
 	  filesystem interface.  The name of the subsystem will be
 	  bfqio.
 
-config IOSCHED_FIFO
-	bool
-	default y
-	---help---
-	 A no-op scheduler that really does nothing.
-
 choice
 	prompt "Default I/O scheduler"
 	default DEFAULT_CFQ
@@ -103,9 +97,6 @@ choice
 	config DEFAULT_NOOP
 		bool "No-op"
 
-	config DEFAULT_FIFO
-		bool "fifo"
-
 endchoice
 
 config DEFAULT_IOSCHED
@@ -115,7 +106,6 @@ config DEFAULT_IOSCHED
 	default "sio" if DEFAULT_SIO
 	default "bfq" if DEFAULT_BFQ
 	default "noop" if DEFAULT_NOOP
-	default "fifo" if DEFAULT_FIFO
 
 endmenu
 

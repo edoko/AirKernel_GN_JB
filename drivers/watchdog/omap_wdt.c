@@ -410,13 +410,6 @@ static int __devinit omap_wdt_probe(struct platform_device *pdev)
 
 	omap_wdt_dev = pdev;
 
-	if (kernelpet && wdev->irq) {
-		wdev->nb.notifier_call = omap_wdt_nb_func;
-		atomic_notifier_chain_register(&touch_watchdog_notifier_head,
-			&wdev->nb);
-		return omap_wdt_setup(wdev);
-	}
-
 	return 0;
 
 err_misc:
@@ -463,13 +456,6 @@ static int __devexit omap_wdt_remove(struct platform_device *pdev)
 	misc_deregister(&(wdev->omap_wdt_miscdev));
 	release_mem_region(res->start, resource_size(res));
 	platform_set_drvdata(pdev, NULL);
-
-	if (wdev->irq)
-		free_irq(wdev->irq, wdev);
-
-	if (kernelpet && wdev->irq)
-		atomic_notifier_chain_unregister(&touch_watchdog_notifier_head,
-			&wdev->nb);
 
 	iounmap(wdev->base);
 

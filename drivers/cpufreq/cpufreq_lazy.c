@@ -41,6 +41,7 @@
 #define MICRO_FREQUENCY_MIN_SAMPLE_RATE		(10000)
 #define MIN_FREQUENCY_UP_THRESHOLD		(11)
 #define MAX_FREQUENCY_UP_THRESHOLD		(100)
+#define DEF_SMOOTH_UI				(0)
 
 /*
  * The polling frequency of this governor depends on the capability of
@@ -54,7 +55,7 @@
  */
 #define MIN_SAMPLING_RATE_RATIO			(2)
 
-static unsigned int min_sampling_rate, current_sampling_rate;
+static unsigned int min_sampling_rate, current_sampling_rate, touch_state_val;
 
 #define LATENCY_MULTIPLIER			(1000)
 #define MIN_LATENCY_MULTIPLIER			(100)
@@ -114,6 +115,7 @@ static struct dbs_tuners {
     unsigned int powersave_bias;
     unsigned int io_is_busy;
     unsigned int min_timeinstate;
+    unsigned int smooth_ui;
 #ifdef CONFIG_HAS_EARLYSUSPEND
     bool screenoff_maxfreq;
 #endif
@@ -122,6 +124,7 @@ static struct dbs_tuners {
     .down_differential = DEF_FREQUENCY_DOWN_DIFFERENTIAL,
     .ignore_nice = 0,
     .powersave_bias = 0,
+    .smooth_ui = DEF_SMOOTH_UI,
 #ifdef CONFIG_HAS_EARLYSUSPEND
     .screenoff_maxfreq = false,
 #endif
@@ -287,6 +290,7 @@ show_one(up_threshold, up_threshold);
 show_one(ignore_nice_load, ignore_nice);
 show_one(powersave_bias, powersave_bias);
 show_one(min_timeinstate, min_timeinstate);
+show_one(smooth_ui,smooth_ui);
 #ifdef CONFIG_HAS_EARLYSUSPEND
 show_one(screenoff_maxfreq, screenoff_maxfreq);
 #endif
@@ -396,6 +400,19 @@ static ssize_t store_min_timeinstate(struct kobject *a, struct attribute *b,
     return count;
 }
 
+static ssize_t store_smooth_ui(struct kobject *a, struct attribute *b,
+				   const char *buf, size_t count)
+{
+	unsigned int input;
+	int ret;
+
+	ret = sscanf(buf, "%u", &input);
+	if (ret != 1)
+		return -EINVAL;
+	dbs_tuners_ins.smooth_ui = !!input;
+	return count;
+}
+
 #ifdef CONFIG_HAS_EARLYSUSPEND
 static ssize_t store_screenoff_maxfreq(struct kobject *a, struct attribute *b,
 				  const char *buf, size_t count)
@@ -416,6 +433,7 @@ define_one_global_rw(up_threshold);
 define_one_global_rw(ignore_nice_load);
 define_one_global_rw(powersave_bias);
 define_one_global_rw(min_timeinstate);
+define_one_global_rw(smooth_ui);
 #ifdef CONFIG_HAS_EARLYSUSPEND
 define_one_global_rw(screenoff_maxfreq);
 #endif
@@ -428,6 +446,7 @@ static struct attribute *dbs_attributes[] = {
     &powersave_bias.attr,
     &io_is_busy.attr,
     &min_timeinstate.attr,
+    &smooth_ui.attr,
 #ifdef CONFIG_HAS_EARLYSUSPEND
     &screenoff_maxfreq.attr,
 #endif
@@ -554,7 +573,7 @@ static void dbs_check_cpu(struct cpu_dbs_info_s *this_dbs_info)
     }
 
     /* Check for frequency increase */
-    if (max_load_freq > dbs_tuners_ins.up_threshold * policy->cur) {
+    if ((dbs_tuners_ins.smooth_ui && touch_state_val) || max_load_freq > dbs_tuners_ins.up_threshold * policy->cur) {
 	/* if we are already at full speed then break out early */
 	if (!dbs_tuners_ins.powersave_bias) {
 	    if (policy->cur == policy->max)

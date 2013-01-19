@@ -419,7 +419,7 @@ struct cpu_usage_history *hotplug_history;
 
 static inline cputime64_t get_cpu_idle_time_jiffy(unsigned int cpu, cputime64_t *wall)
 {
-	cputime64_t idle_time, cur_wall_time, busy_time;
+	cputime64_t idle_time, cur_wall_time, busy_time = 0;
 
 	cur_wall_time = jiffies64_to_cputime64(get_jiffies_64());
 
@@ -1341,33 +1341,6 @@ static inline void dbs_timer_exit(struct cpu_dbs_info_s *dbs_info)
 	cancel_work_sync(&dbs_info->up_work);
 	cancel_work_sync(&dbs_info->down_work);
 }
-
-static int pm_notifier_call(struct notifier_block *this,
-			    unsigned long event, void *ptr)
-{
-	static unsigned int prev_hotplug_lock;
-	switch (event) {
-	case PM_SUSPEND_PREPARE:
-		prev_hotplug_lock = atomic_read(&g_hotplug_lock);
-		atomic_set(&g_hotplug_lock, 1);
-		apply_hotplug_lock();
-		pr_debug("%s enter suspend\n", __func__);
-		return NOTIFY_OK;
-	case PM_POST_RESTORE:
-	case PM_POST_SUSPEND:
-		atomic_set(&g_hotplug_lock, prev_hotplug_lock);
-		if (prev_hotplug_lock)
-			apply_hotplug_lock();
-		prev_hotplug_lock = 0;
-		pr_debug("%s exit suspend\n", __func__);
-		return NOTIFY_OK;
-	}
-	return NOTIFY_DONE;
-}
-
-static struct notifier_block pm_notifier = {
-	.notifier_call = pm_notifier_call,
-};
 
 static int reboot_notifier_call(struct notifier_block *this,
 				unsigned long code, void *_cmd)

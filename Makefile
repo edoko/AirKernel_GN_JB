@@ -347,10 +347,10 @@ CHECK		= sparse
 
 CHECKFLAGS     := -D__linux__ -Dlinux -D__STDC__ -Dunix -D__unix__ \
 		  -Wbitwise -Wno-return-void $(CF)
-CFLAGS_MODULE   = -DMODULE -O3 -mcpu=cortex-a9 -mfpu=neon -march=armv7-a -mtune=cortex-a9 -funswitch-loops -fpredictive-commoning -fgcse-after-reload -ftree-vectorize -fipa-cp-clone -fsingle-precision-constant -pipe
+CFLAGS_MODULE   = -DMODULE -O2 -mcpu=cortex-a9 -mfpu=neon -march=armv7-a -mtune=cortex-a9 -funswitch-loops -fpredictive-commoning -fgcse-after-reload -ftree-vectorize -fipa-cp-clone -fsingle-precision-constant -pipe
 AFLAGS_MODULE   =
 LDFLAGS_MODULE  =
-CFLAGS_KERNEL	= -O3 -mcpu=cortex-a9 -mfpu=neon -march=armv7-a -mtune=cortex-a9 -funswitch-loops -fpredictive-commoning -fgcse-after-reload -ftree-vectorize -fipa-cp-clone -fsingle-precision-constant -pipe
+CFLAGS_KERNEL	= -O2 -mcpu=cortex-a9 -mfpu=neon -march=armv7-a -mtune=cortex-a9 -funswitch-loops -fpredictive-commoning -fgcse-after-reload -ftree-vectorize -fipa-cp-clone -fsingle-precision-constant -pipe
 AFLAGS_KERNEL	=
 CFLAGS_GCOV	= -fprofile-arcs -ftest-coverage
 
@@ -375,7 +375,7 @@ KBUILD_CFLAGS   := -Wall -Wundef -Wstrict-prototypes -Wno-trigraphs \
 		   -mno-unaligned-access -pipe
 
 KBUILD_AFLAGS_KERNEL :=
-KBUILD_CFLAGS_KERNEL := -O3 -mcpu=cortex-a9 -mfpu=neon -march=armv7-a -mtune=cortex-a9 -funswitch-loops -fpredictive-commoning -fgcse-after-reload -ftree-vectorize -fipa-cp-clone -fsingle-precision-constant -pipe
+KBUILD_CFLAGS_KERNEL := -O2 -mcpu=cortex-a9 -mfpu=neon -march=armv7-a -mtune=cortex-a9 -funswitch-loops -fpredictive-commoning -fgcse-after-reload -ftree-vectorize -fipa-cp-clone -fsingle-precision-constant -pipe
 KBUILD_AFLAGS   := -D__ASSEMBLY__
 KBUILD_AFLAGS_MODULE  := -DMODULE
 KBUILD_CFLAGS_MODULE  := -DMODULE

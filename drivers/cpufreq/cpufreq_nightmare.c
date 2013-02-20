@@ -129,20 +129,6 @@ static void rq_work_fn(struct work_struct *work)
 	spin_unlock_irqrestore(&rq_data->lock, flags);
 }
 
-static unsigned int get_nr_run_avg(void)
-{
-	unsigned int nr_run_avg;
-	unsigned long flags = 0;
-
-	spin_lock_irqsave(&rq_data->lock, flags);
-	nr_run_avg = rq_data->nr_run_avg;
-	rq_data->nr_run_avg = 0;
-	spin_unlock_irqrestore(&rq_data->lock, flags);
-
-	return nr_run_avg;
-}
-
-
 /*
  * dbs is used in this file as a shortform for demandbased switching
  * It helps to keep variable names smaller, simpler
@@ -468,14 +454,12 @@ struct cpu_usage_history *hotplug_histories;
 static inline cputime64_t get_cpu_idle_time_jiffy(unsigned int cpu,
 							cputime64_t *wall)
 {
-	cputime64_t idle_time;
-	cputime64_t cur_wall_time;
-	cputime64_t busy_time;
+	cputime64_t idle_time, cur_wall_time, busy_time = 0;
 
 	cur_wall_time = jiffies64_to_cputime64(get_jiffies_64());
 
-	busy_time  = cputime64_add(busy_time, kstat_cpu(cpu).cpustat.user);
-	busy_time  = cputime64_add(busy_time, kstat_cpu(cpu).cpustat.system);
+	busy_time = cputime64_add(busy_time, kstat_cpu(cpu).cpustat.user);
+	busy_time = cputime64_add(busy_time, kstat_cpu(cpu).cpustat.system);
 	busy_time = cputime64_add(busy_time, kstat_cpu(cpu).cpustat.irq);
 	busy_time = cputime64_add(busy_time, kstat_cpu(cpu).cpustat.softirq);
 	busy_time = cputime64_add(busy_time, kstat_cpu(cpu).cpustat.steal);
@@ -599,7 +583,7 @@ static ssize_t store_sampling_down_factor(struct kobject *a,
 					  struct attribute *b,
 					  const char *buf, size_t count)
 {
-	unsigned int input, j;
+	unsigned int input;
 	int ret;
 	ret = sscanf(buf, "%u", &input);
 
@@ -844,7 +828,7 @@ static ssize_t store_sampling_up_factor(struct kobject *a,
 					  struct attribute *b,
 					  const char *buf, size_t count)
 {
-	unsigned int input, j;
+	unsigned int input;
 	int ret;
 	ret = sscanf(buf, "%u", &input);
 
@@ -1294,18 +1278,6 @@ static void cpu_down_work(struct work_struct *work)
 	}
 }
 
-static void debug_hotplug_check(int which, int rq_avg, int freq,
-			 struct cpu_usage *usage)
-{
-	int cpu;
-	printk(KERN_ERR "CHECK %s rq %d.%02d freq %d [", which ? "up" : "down",
-	       rq_avg / 100, rq_avg % 100, freq);
-	for_each_online_cpu(cpu) {
-		printk(KERN_ERR "(%d, %d), ", cpu, usage->load[cpu]);
-	}
-	printk(KERN_ERR "]\n");
-}
-
 static void nightmare_check_cpu(struct cpufreq_nightmare_cpuinfo *this_nightmare_cpuinfo)
 {
 	struct cpu_hotplug_info tmp_hotplug_info[4];
@@ -1598,33 +1570,6 @@ static inline void nightmare_timer_exit(struct cpufreq_nightmare_cpuinfo *nightm
 	cancel_work_sync(&nightmare_cpuinfo->down_work);
 }
 
-static int pm_notifier_call(struct notifier_block *this,
-			    unsigned long event, void *ptr)
-{
-	static unsigned int prev_hotplug_lock;
-	switch (event) {
-	case PM_SUSPEND_PREPARE:
-		prev_hotplug_lock = atomic_read(&g_hotplug_lock);
-		atomic_set(&g_hotplug_lock, 1);
-		apply_hotplug_lock();
-		pr_debug("%s enter suspend\n", __func__);
-		return NOTIFY_OK;
-	case PM_POST_RESTORE:
-	case PM_POST_SUSPEND:
-		atomic_set(&g_hotplug_lock, prev_hotplug_lock);
-		if (prev_hotplug_lock)
-			apply_hotplug_lock();
-		prev_hotplug_lock = 0;
-		pr_debug("%s exit suspend\n", __func__);
-		return NOTIFY_OK;
-	}
-	return NOTIFY_DONE;
-}
-
-static struct notifier_block pm_notifier = {
-	.notifier_call = pm_notifier_call,
-};
-
 static int reboot_notifier_call(struct notifier_block *this,
 				unsigned long code, void *_cmd)
 {
@@ -1745,10 +1690,8 @@ static int cpufreq_governor_nightmare(struct cpufreq_policy *policy,
 {
 	unsigned int cpu = policy->cpu;
 	struct cpufreq_nightmare_cpuinfo *this_nightmare_cpuinfo;
-	struct cpufreq_frequency_table *freq_table;
 	unsigned int j;
 	int rc;
-	unsigned int online;
 
 	this_nightmare_cpuinfo = &per_cpu(od_nightmare_cpuinfo, cpu);
 
@@ -1855,7 +1798,6 @@ static int cpufreq_governor_nightmare(struct cpufreq_policy *policy,
 
 		for_each_online_cpu(j) {
 			struct cpufreq_policy *cpu_policy;
-			struct cpufreq_nightmare_cpuinfo *cpu_nightmare_cpuinfo;
 
 			cpu_policy = cpufreq_cpu_get(j);
 			if (!cpu_policy)

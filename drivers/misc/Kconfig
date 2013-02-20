@@ -585,6 +585,12 @@ config CUSTOM_VOLTAGE
 	help
 	  Say Y here to enable Custom Voltage
 
+config VIBRATOR_CONTROL
+	bool "Support for Vibrator Control"
+	default y
+	help
+	  Say Y here to enable Vibrator Control
+
 config SOUND_CONTROL
 	bool "Enable support for Sound Control"
 	default y

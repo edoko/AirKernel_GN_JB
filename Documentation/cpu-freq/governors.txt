@@ -29,6 +29,7 @@ Contents:
 2.4  Ondemand
 2.5  Conservative
 2.6  Interactive
+2.8  ZenX
 
 3.   The Governor Interface in the CPUfreq Core
 
@@ -268,33 +269,75 @@ boostpulse_duration: Length of time to hold CPU speed at hispeed_freq
 on a write to boostpulse, before allowing speed to drop according to
 load as usual.  Default is 80000 uS.
 
+2.8 ZenX
+---------------
 
-2.7 Hotplug
------------
+The CPUfreq governor "ZenX" behaves exactly the same as
+"interactive" when scaling frequencies.
 
-The CPUfreq governor "hotplug" operates similary to "ondemand" and
-"conservative".  It's decisions are based primarily on CPU load.  Like
-"ondemand" the "hotplug" governor will ramp up to the highest frequency
-once the run-time tunable "up_threshold" parameter is crossed.  Like
-"conservative", the "hotplug" governor exports a "down_threshold"
-parameter that is also tunable at run-time.  When the "down_threshold"
-is crossed the CPU transitions to the next lowest frequency in the
-CPUfreq frequency table instead of decrementing the frequency based on a
-percentage of maximum load.
+ZenX hotplugs CPUs based on the average CPU load across all CPUs, but 
+it only makes hotplug determinations after a certain amount of
+sampling periods (similar to hotplug governor).
 
-The main reason "hotplug" governor exists is for architectures requiring
-that only the master CPU be online in order to hit low-power states
-(C-states).  OMAP4 is one such example of this.  The "hotplug" governor
-is also helpful in reducing thermal output in devices with tight thermal
-constraints.
+Hotplugging can be disabled per-CPU by setting 
+unplug_load_cpu[#] to 0.
 
-Auxillary CPUs are onlined/offline based on CPU load, but the decision
-to do so is made after averaging several sampling windows.  This is to
-reduce CPU hotplug "thrashing", which can be caused by normal system
-entropy and leads to lots of spurious plug-in and plug-out transitions.
-The number of sampling periods averaged together is tunable via the
-"hotplug_in_sampling_periods" and "hotplug_out_sampling_periods"
-run-time tunable parameters.
+The tuneable values for this governor are:
+
+target_loads: CPU load values used to adjust speed to influence the
+current CPU load toward that value.  In general, the lower the target
+load, the more often the governor will raise CPU speeds to bring load
+below the target.  The format is a single target load, optionally
+followed by pairs of CPU speeds and CPU loads to target at or above
+those speeds.  Colons can be used between the speeds and associated
+target loads for readability.  For example:
+
+   85 1000000:90 1700000:99
+
+targets CPU load 85% below speed 1GHz, 90% at or above 1GHz, until
+1.7GHz and above, at which load 99% is targeted.  If speeds are
+specified these must appear in ascending order.  Higher target load
+values are typically specified for higher speeds, that is, target load
+values also usually appear in an ascending order. The default is
+target load 90% for all speeds.
+
+min_sample_time: The minimum amount of time to spend at the current
+frequency before ramping down. This is to ensure that the governor has
+seen enough historic cpu load data to determine the appropriate
+workload.  Default is 80000 uS.
+
+hispeed_freq: An intermediate "hi speed" at which to initially ramp
+when CPU load hits the value specified in go_hispeed_load.  If load
+stays high for the amount of time specified in above_hispeed_delay,
+then speed may be bumped higher.  Default is maximum speed.
+
+go_hispeed_load: The CPU load at which to ramp to the intermediate "hi
+speed".  Default is 85%.
+
+above_hispeed_delay: Once speed is set to hispeed_freq, wait for this
+long before bumping speed higher in response to continued high load.
+Default is 20000 uS.
+
+timer_rate: Sample rate for reevaluating cpu load when the system is
+not idle.  Default is 20000 uS.
+
+suspend_frequency: The target frequency we should apply when going into
+suspend.
+
+hot_add_sampling_periods: How many sampling periods we wait before
+checking average CPU load to add a CPU.
+
+hot_remove_sampling_periods: How many sampling periods we wait before
+checking average CPU load to remove a CPU.
+
+unplug_load_cpu1: CPU load that we should unplug CPU 1 at. 
+Default is 25%
+
+unplug_load_cpu2: CPU load that we should unplug CPU 2 at.
+default is 50%
+
+unplug_load_cpumore: CPU load that we should unplug CPUs 3-7 at.
+default is 50%
 
 3. The Governor Interface in the CPUfreq Core
 =============================================

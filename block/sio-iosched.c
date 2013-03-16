@@ -377,7 +377,9 @@ static struct elevator_type iosched_sio = {
 static int __init sio_init(void)
 {
 	/* Register elevator */
-	return elv_register(&iosched_sio);
+	elv_register(&iosched_sio);
+
+	return 0;
 }
 
 static void __exit sio_exit(void)

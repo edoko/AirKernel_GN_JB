@@ -774,7 +774,9 @@ static struct elevator_type iosched_row = {
 
 static int __init row_init(void)
 {
-	return elv_register(&iosched_row);
+	elv_register(&iosched_row);
+
+	return 0;
 }
 
 static void __exit row_exit(void)

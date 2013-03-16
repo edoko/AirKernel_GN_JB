@@ -70,7 +70,9 @@ static struct elevator_type elevator_fifo = {
 
 static int __init fifo_init(void)
 {
-	return elv_register(&elevator_fifo);
+	elv_register(&elevator_fifo);
+
+	return 0;
 }
 
 static void __exit fifo_exit(void)

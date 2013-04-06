@@ -24,6 +24,7 @@ obj-$(CONFIG_CPU_FREQ_GOV_NIGHTMARE)	+= cpufreq_nightmare.o
 obj-$(CONFIG_CPU_FREQ_GOV_ZENX)		+= cpufreq_zenx.o
 obj-$(CONFIG_CPU_FREQ_GOV_LAZY)		+= cpufreq_lazy.o
 obj-$(CONFIG_CPU_FREQ_GOV_ZZMOOVE)		+= cpufreq_zzmoove.o
+obj-$(CONFIG_CPU_FREQ_GOV_KTOONSERVATIVE) += cpufreq_ktoonservative.o
 
 # CPUfreq cross-arch helpers
 obj-$(CONFIG_CPU_FREQ_TABLE)		+= freq_table.o

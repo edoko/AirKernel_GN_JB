@@ -361,11 +361,7 @@ extern signed long schedule_timeout_interruptible(signed long timeout);
 extern signed long schedule_timeout_killable(signed long timeout);
 extern signed long schedule_timeout_uninterruptible(signed long timeout);
 asmlinkage void schedule(void);
-<<<<<<< HEAD
 extern int mutex_spin_on_owner(struct mutex *lock, struct task_struct *owner);
-=======
-extern void schedule_preempt_disabled(void);
->>>>>>> 29248e2... mutex: Move mutex spinning code from sched/core.c back to mutex.c
 
 struct nsproxy;
 struct user_namespace;
